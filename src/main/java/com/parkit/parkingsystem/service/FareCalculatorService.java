@@ -22,10 +22,7 @@ public class FareCalculatorService {
 		long diff = ticket.getOutTime().getTime() - ticket.getInTime().getTime();
 		double duration = (double) diff / (60 * 60) / 1000;
 
-		// story 1 - if less 30 min
-		if (duration <= 0.5) {
-			duration = 0;
-		}
+		duration = durationTime(duration);
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
@@ -40,4 +37,14 @@ public class FareCalculatorService {
 			throw new IllegalArgumentException("Unkown Parking Type");
 		}
 	}
+
+	private double durationTime(double dT) {
+
+		// story 1 - if less 30 min
+		if (dT <= 0.5) {
+			dT = 0;
+		}
+		return dT;
+	}
+
 }
