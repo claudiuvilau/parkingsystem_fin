@@ -15,11 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.parkit.parkingsystem.DataBaseTestConfig;
 import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
-import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
+import com.parkit.parkingsystem.service.Discount;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
@@ -73,7 +74,8 @@ public class ParkingDataBaseIT {
 		// THEN
 		if (rs.last()) {
 			assertNotEquals(null, rs.getString(5));
-		}
+		} else
+			assertNotEquals(null, rs.getString(5));
 		db_test.closeResultSet(rs);
 		db_test.closePreparedStatement(ps);
 
@@ -98,7 +100,38 @@ public class ParkingDataBaseIT {
 		// THEN
 		if (rs.last()) {
 			assertNotEquals(null, rs.getString(5));
-		}
+		} else
+			assertNotEquals(null, rs.getString(5));
+
+		db_test.closeResultSet(rs);
+		db_test.closePreparedStatement(ps);
+
+	}
+
+	@Test
+	public void testDiscount() throws Exception {
+		testParkingACar();
+		testParkingLotExit();
+
+		// GIVEN
+		String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
+
+		// WHEN
+		DataBaseTestConfig db_test = new DataBaseTestConfig();
+		Connection con = db_test.getConnection();
+		PreparedStatement ps = con.prepareStatement(DBConstants.FIND_TICKET_FOR_DISCOUNT);
+		ps.setString(1, vehicleRegNumber);
+		ResultSet rs = ps.executeQuery();
+
+		Discount discount = new Discount();
+		discount.discount5(rs);
+
+		// THEN
+		if (rs.last()) {
+			assertNotEquals(null, rs.getString(1));
+		} else
+			assertNotEquals(null, rs.getString(1));
+
 		db_test.closeResultSet(rs);
 		db_test.closePreparedStatement(ps);
 
