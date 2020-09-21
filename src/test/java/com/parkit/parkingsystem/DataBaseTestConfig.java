@@ -1,4 +1,4 @@
-package com.parkit.parkingsystem.integration.config;
+package com.parkit.parkingsystem;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,7 +22,7 @@ public class DataBaseTestConfig extends DataBaseConfig {
 		// d'été...
 		String url_timezone = "?serverTimezone=UTC";
 
-		String url = "jdbc:mysql://localhost:3306/prod";
+		String url = "jdbc:mysql://localhost:3306/test";
 		String user = "claudiu";
 		String mdp = "java1234*";
 
