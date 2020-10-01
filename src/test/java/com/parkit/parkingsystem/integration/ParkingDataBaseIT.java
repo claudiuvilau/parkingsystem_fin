@@ -140,7 +140,6 @@ public class ParkingDataBaseIT {
 			assertEquals(Math.round((Fare.CAR_RATE_PER_HOUR - Fare.CAR_RATE_PER_HOUR * disc) * 100.0) / 100.0,
 					rs.getDouble("price"));
 		}
-
 		db_test.closeResultSet(rs);
 		db_test.closePreparedStatement(ps);
 
