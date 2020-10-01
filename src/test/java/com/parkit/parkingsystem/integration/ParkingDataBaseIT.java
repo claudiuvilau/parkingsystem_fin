@@ -1,11 +1,14 @@
 package com.parkit.parkingsystem.integration;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,7 +23,6 @@ import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
-import com.parkit.parkingsystem.service.Discount;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
@@ -66,13 +68,18 @@ public class ParkingDataBaseIT {
 		// GIVEN
 		String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
 		// WHEN
+		Date inTime = new Date();
+		inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000)); // set time 1 hour less
 		DataBaseTestConfig db_test = new DataBaseTestConfig();
 		Connection con = db_test.getConnection();
+		PreparedStatement ps1 = con.prepareStatement(DBConstants.UPDATE_TIME_TICKET);
+		ps1.setTimestamp(1, new Timestamp(inTime.getTime()));
+		ps1.execute();
 		PreparedStatement ps = con.prepareStatement(DBConstants.FIND_IN_TICKET);
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
 		// THEN
-		if (rs.last()) {
+		if (rs.next()) {
 			assertNotEquals(null, rs.getString(5));
 		} else
 			assertNotEquals(null, rs.getString(5));
@@ -98,7 +105,7 @@ public class ParkingDataBaseIT {
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
 		// THEN
-		if (rs.last()) {
+		if (rs.next()) {
 			assertNotEquals(null, rs.getString(5));
 		} else
 			assertNotEquals(null, rs.getString(5));
@@ -110,7 +117,8 @@ public class ParkingDataBaseIT {
 
 	@Test
 	public void testDiscount() throws Exception {
-		testParkingACar();
+		testParkingLotExit();
+		testParkingLotExit();
 		testParkingLotExit();
 
 		// GIVEN
@@ -119,18 +127,19 @@ public class ParkingDataBaseIT {
 		// WHEN
 		DataBaseTestConfig db_test = new DataBaseTestConfig();
 		Connection con = db_test.getConnection();
-		PreparedStatement ps = con.prepareStatement(DBConstants.FIND_TICKET_FOR_DISCOUNT);
+		PreparedStatement ps = con.prepareStatement(DBConstants.COUNT_TICKET_FOR_DISCOUNT);
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
-
-		Discount discount = new Discount();
-		discount.discount5(rs);
-
+		int occurence = 0;
+		if (rs.next()) {
+			occurence = rs.getInt(1);
+		}
+		boolean occ = false;
+		if (occurence >= 1) {
+			occ = true;
+		}
 		// THEN
-		if (rs.last()) {
-			assertNotEquals(null, rs.getString(1));
-		} else
-			assertNotEquals(null, rs.getString(1));
+		assertTrue(occ);
 
 		db_test.closeResultSet(rs);
 		db_test.closePreparedStatement(ps);

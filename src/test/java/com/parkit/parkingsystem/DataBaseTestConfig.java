@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.TimeZone;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +21,7 @@ public class DataBaseTestConfig extends DataBaseConfig {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		// pour éviter l'erreur message The server time zone value 'Paris, Madrid (heure
 		// d'été...
-		String url_timezone = "?serverTimezone=UTC";
+		String url_timezone = "?serverTimezone=" + TimeZone.getDefault().getID();
 
 		String url = "jdbc:mysql://localhost:3306/test";
 		String user = "claudiu";

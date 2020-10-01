@@ -3,6 +3,7 @@ package com.parkit.parkingsystem.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,28 +22,29 @@ public class TicketDAO {
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+	@SuppressWarnings("finally")
 	public boolean saveTicket(Ticket ticket) {
 		Connection con = null;
 		try {
 			con = dataBaseConfig.getConnection();
 
-			PreparedStatement ps_disc = con.prepareStatement(DBConstants.FIND_TICKET_FOR_DISCOUNT);
-			ps_disc.setString(1, ticket.getVehicleRegNumber());
-			ResultSet rs = ps_disc.executeQuery();
-			double disc = 0;
+			int occurence = 0;
+			occurence = occurence_for_disc(con, ticket);
 			Discount discount = new Discount();
-			disc = discount.discount5(rs);
+			discount.discount_msg(occurence);
 
 			PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET);
 			// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
 			// ps.setInt(1,ticket.getId());
 			ps.setInt(1, ticket.getParkingSpot().getId());
 			ps.setString(2, ticket.getVehicleRegNumber());
-			ps.setDouble(3, ticket.getPrice() - (ticket.getPrice() * disc / 100));
+			ps.setDouble(3, ticket.getPrice());
 			ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));
 			ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTime())));
 			return ps.execute();
-		} catch (Exception ex) {
+		} catch (
+
+		Exception ex) {
 			logger.error("Error fetching next available slot", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
@@ -50,6 +52,7 @@ public class TicketDAO {
 		}
 	}
 
+	@SuppressWarnings("finally")
 	public Ticket getTicket(String vehicleRegNumber) {
 		Connection con = null;
 		Ticket ticket = null;
@@ -83,6 +86,14 @@ public class TicketDAO {
 		Connection con = null;
 		try {
 			con = dataBaseConfig.getConnection();
+
+			int occurence = 0;
+			occurence = occurence_for_disc(con, ticket);
+			double disc = 0;
+			Discount discount = new Discount();
+			disc = discount.discount(occurence);
+
+			ticket.setPrice(Math.round((ticket.getPrice() - (ticket.getPrice() * disc / 100)) * 100.0) / 100.0);
 			PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
 			ps.setDouble(1, ticket.getPrice());
 			ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
@@ -96,4 +107,16 @@ public class TicketDAO {
 		}
 		return false;
 	}
+
+	private int occurence_for_disc(Connection con, Ticket ticket) throws SQLException {
+		PreparedStatement ps_disc = con.prepareStatement(DBConstants.COUNT_TICKET_FOR_DISCOUNT);
+		ps_disc.setString(1, ticket.getVehicleRegNumber());
+		ResultSet rs = ps_disc.executeQuery();
+		int occurence = 0;
+		if (rs.next()) {
+			occurence = rs.getInt(1);
+		}
+		return occurence;
+	}
+
 }
