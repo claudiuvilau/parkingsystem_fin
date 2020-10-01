@@ -1,7 +1,7 @@
 package com.parkit.parkingsystem.integration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.parkit.parkingsystem.DataBaseTestConfig;
 import com.parkit.parkingsystem.constants.DBConstants;
+import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
@@ -127,20 +128,18 @@ public class ParkingDataBaseIT {
 		// WHEN
 		DataBaseTestConfig db_test = new DataBaseTestConfig();
 		Connection con = db_test.getConnection();
-		PreparedStatement ps = con.prepareStatement(DBConstants.COUNT_TICKET_FOR_DISCOUNT);
+		PreparedStatement ps = con.prepareStatement(DBConstants.FIND_TICKET_FOR_DISCOUNT);
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
-		int occurence = 0;
-		if (rs.next()) {
-			occurence = rs.getInt(1);
-		}
-		boolean occ = false;
-		if (occurence >= 1) {
-			occ = true;
-		}
-		// THEN
-		assertTrue(occ);
+		double disc = 0.05;
 
+		// THEN
+		rs.next();
+		assertEquals(Fare.CAR_RATE_PER_HOUR, rs.getDouble("price"));
+		while (rs.next()) {
+			assertEquals(Math.round((Fare.CAR_RATE_PER_HOUR - Fare.CAR_RATE_PER_HOUR * disc) * 100.0) / 100.0,
+					rs.getDouble("price"));
+		}
 		db_test.closeResultSet(rs);
 		db_test.closePreparedStatement(ps);
 
