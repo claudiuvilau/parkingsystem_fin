@@ -24,6 +24,7 @@ import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
+import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
@@ -143,6 +144,35 @@ public class ParkingDataBaseIT {
 		db_test.closeResultSet(rs);
 		db_test.closePreparedStatement(ps);
 
+	}
+
+	@Test
+	public void testgetTicket() throws Exception {
+		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		parkingService.processIncomingVehicle();
+		// GIVEN
+		String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
+
+		Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
+
+		// WHEN
+		DataBaseTestConfig db_test = new DataBaseTestConfig();
+		Connection con = db_test.getConnection();
+		PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
+		ps.setString(1, vehicleRegNumber);
+		ResultSet rs = ps.executeQuery();
+
+		// THEN
+
+		if (rs.next()) {
+			assertEquals(ticket.getId(), rs.getInt(2));
+			assertEquals(ticket.getVehicleRegNumber(), vehicleRegNumber);
+			assertEquals(ticket.getPrice(), rs.getDouble(3));
+			assertEquals(ticket.getInTime(), rs.getTimestamp(4));
+			assertEquals(ticket.getOutTime(), rs.getTimestamp(5));
+		}
+		db_test.closeResultSet(rs);
+		db_test.closePreparedStatement(ps);
 	}
 
 }
