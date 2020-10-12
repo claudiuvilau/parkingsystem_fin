@@ -153,9 +153,9 @@ public class ParkingDataBaseIT {
 		// GIVEN
 		String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
 
+		// WHEN
 		Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
 
-		// WHEN
 		DataBaseTestConfig db_test = new DataBaseTestConfig();
 		Connection con = db_test.getConnection();
 		PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
