@@ -47,9 +47,9 @@ public class Ticket {
 		return discount;
 	}
 
-	public void setDiscount(double price) {
+	/*public void setDiscount(double price) {
 		this.discount = discount;
-	}
+	}*/
 
 	public Date getInTime() {
 		return inTime;

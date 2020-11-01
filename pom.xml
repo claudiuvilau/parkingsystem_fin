@@ -72,6 +72,11 @@
             <artifactId>maven-assembly-plugin</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <dependency>
+        	<groupId>com.google.code.findbugs</groupId>
+        	<artifactId>bcel-findbugs</artifactId>
+        	<version>6.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -111,7 +116,7 @@
                                 </manifest>
                             </archive>
                             <descriptors>
-                                <descriptors>src/main/assembly/jar-with-dependencies.xml</descriptors>
+                                <descriptors>src/assembly/jar-with-dependencies.xml</descriptors>
                             </descriptors>
                         </configuration>
                     </execution>
@@ -152,24 +157,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>jacoco-report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-    
-                    </execution>
-                </executions>
+            	<groupId>org.jacoco</groupId>
+            	<artifactId>jacoco-maven-plugin</artifactId>
+            	<version>0.8.5</version>
             </plugin>
         </plugins>
     </build>
