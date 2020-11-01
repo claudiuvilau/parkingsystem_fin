@@ -16,6 +16,7 @@ public class DataBaseTestConfig extends DataBaseConfig {
 
 	private static final Logger logger = LogManager.getLogger("DataBaseTestConfig");
 
+	@Override
 	public Connection getConnection() throws ClassNotFoundException, SQLException {
 		logger.info("Create DB connection");
 		Class.forName("com.mysql.cj.jdbc.Driver");
@@ -30,6 +31,7 @@ public class DataBaseTestConfig extends DataBaseConfig {
 		return DriverManager.getConnection(url + url_timezone, user, mdp);
 	}
 
+	@Override
 	public void closeConnection(Connection con) {
 		if (con != null) {
 			try {
@@ -41,6 +43,7 @@ public class DataBaseTestConfig extends DataBaseConfig {
 		}
 	}
 
+	@Override
 	public void closePreparedStatement(PreparedStatement ps) {
 		if (ps != null) {
 			try {
@@ -52,6 +55,7 @@ public class DataBaseTestConfig extends DataBaseConfig {
 		}
 	}
 
+	@Override
 	public void closeResultSet(ResultSet rs) {
 		if (rs != null) {
 			try {

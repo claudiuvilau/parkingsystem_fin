@@ -1,6 +1,7 @@
 package com.parkit.parkingsystem;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Date;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
+import com.parkit.parkingsystem.dao.Discount;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
@@ -157,6 +159,44 @@ public class FareCalculatorServiceTest {
 		ticket.setParkingSpot(parkingSpot);
 		fareCalculatorService.calculateFare(ticket);
 		assertEquals((24 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+	}
+
+	@Test
+	public void calculateIfDiscount() {
+		int occurence = 5;
+		double disc;
+		double pourcentage = 5;
+		Discount discount = new Discount();
+		disc = discount.discount(occurence);
+		assertEquals(pourcentage, disc);
+	}
+
+	@Test
+	public void calculateIfDiscountZero() {
+		int occurence = 0;
+		double disc;
+		double pourcentage = 0;
+		Discount discount = new Discount();
+		disc = discount.discount(occurence);
+		assertEquals(pourcentage, disc);
+	}
+
+	@Test
+	public void IfMsgdiscount() {
+		int occurence = 1;
+		String msg = "";
+		Discount discount = new Discount();
+		msg = discount.discount_msg(occurence);
+		assertNotEquals(msg, "");
+	}
+
+	@Test
+	public void IfMsgdiscountZero() {
+		int occurence = 0;
+		String msg = "";
+		Discount discount = new Discount();
+		msg = discount.discount_msg(occurence);
+		assertEquals(msg, "");
 	}
 
 }

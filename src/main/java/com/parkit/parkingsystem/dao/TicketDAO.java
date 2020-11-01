@@ -28,9 +28,11 @@ public class TicketDAO {
 			con = dataBaseConfig.getConnection();
 
 			int occurence = 0;
+			String msg_disc;
 			occurence = occurence_for_disc(con, ticket);
 			Discount discount = new Discount();
-			discount.discount_msg(occurence);
+			msg_disc = discount.discount_msg(occurence);
+			System.out.println(msg_disc);
 
 			PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET);
 			// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
