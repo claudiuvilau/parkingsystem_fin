@@ -3,7 +3,6 @@ package com.parkit.parkingsystem.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +28,7 @@ public class TicketDAO {
 
 			int occurence = 0;
 			String msg_disc;
-			occurence = occurence_for_disc(con, ticket);
+			occurence = occurence_for_disc(ticket);
 			Discount discount = new Discount();
 			msg_disc = discount.discount_msg(occurence);
 			System.out.println(msg_disc);
@@ -89,7 +88,7 @@ public class TicketDAO {
 			con = dataBaseConfig.getConnection();
 
 			int occurence = 0;
-			occurence = occurence_for_disc(con, ticket);
+			occurence = occurence_for_disc(ticket);
 			double disc = 0;
 			Discount discount = new Discount();
 			disc = discount.discount(occurence);
@@ -109,14 +108,22 @@ public class TicketDAO {
 		return false;
 	}
 
-	private int occurence_for_disc(Connection con, Ticket ticket) throws SQLException {
-		PreparedStatement ps_disc = con.prepareStatement(DBConstants.COUNT_TICKET_FOR_DISCOUNT);
-		ps_disc.setString(1, ticket.getVehicleRegNumber());
-		ResultSet rs = ps_disc.executeQuery();
+	private int occurence_for_disc(Ticket ticket) {
+		Connection con = null;
 		int occurence = 0;
-		if (rs.next()) {
-			occurence = rs.getInt(1);
-		}
+		try {
+			con = dataBaseConfig.getConnection();
+			PreparedStatement ps_disc = con.prepareStatement(DBConstants.COUNT_TICKET_FOR_DISCOUNT);
+			ps_disc.setString(1, ticket.getVehicleRegNumber());
+			ResultSet rs = ps_disc.executeQuery();
+			if (rs.next()) {
+				occurence = rs.getInt(1);
+			}
+		} catch (Exception ex) {
+			logger.error("Error saving ticket info", ex);
+		} finally {
+			dataBaseConfig.closeConnection(con);
+		}		
 		return occurence;
 	}
 
