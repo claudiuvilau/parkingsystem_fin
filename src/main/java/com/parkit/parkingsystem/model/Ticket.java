@@ -52,18 +52,26 @@ public class Ticket {
 	}*/
 
 	public Date getInTime() {
-		return inTime;
+		Date inTime2 = inTime;
+		return inTime2;
 	}
 
 	public void setInTime(Date inTime) {
-		this.inTime = inTime;
+		Date inTime2 = inTime;
+		this.inTime = inTime2;
 	}
 
 	public Date getOutTime() {
-		return outTime;
+		Date outTime2 = outTime;
+		return outTime2;
 	}
 
 	public void setOutTime(Date outTime) {
-		this.outTime = outTime;
+		if(outTime == null) {
+			this.outTime = null;
+			} else {
+			this.outTime = new Date(outTime.getTime());
+			}
+		//this.outTime = (Date) outTime.clone();
 	}
 }

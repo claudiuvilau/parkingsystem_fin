@@ -20,7 +20,6 @@ public class TicketDAO {
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
-	@SuppressWarnings("finally")
 	public boolean saveTicket(Ticket ticket) {
 		Connection con = null;
 		try {
@@ -41,18 +40,21 @@ public class TicketDAO {
 			ps.setDouble(3, ticket.getPrice());
 			ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));
 			ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTime())));
-			return ps.execute();
+			ps.execute();
+			dataBaseConfig.closePreparedStatement(ps);
+			//return ps.execute();
+			return true;
 		} catch (
 
 		Exception ex) {
 			logger.error("Error fetching next available slot", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
-			return false;
 		}
+			return false;
+
 	}
 
-	@SuppressWarnings("finally")
 	public Ticket getTicket(String vehicleRegNumber) {
 		Connection con = null;
 		Ticket ticket = null;
@@ -78,8 +80,8 @@ public class TicketDAO {
 			logger.error("Error fetching next available slot", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
-			return ticket;
 		}
+			return ticket;
 	}
 
 	public boolean updateTicket(Ticket ticket) {
@@ -99,6 +101,7 @@ public class TicketDAO {
 			ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
 			ps.setInt(3, ticket.getId());
 			ps.execute();
+			dataBaseConfig.closePreparedStatement(ps);
 			return true;
 		} catch (Exception ex) {
 			logger.error("Error saving ticket info", ex);
@@ -109,20 +112,22 @@ public class TicketDAO {
 	}
 
 	private int occurence_for_disc(Ticket ticket) {
-		Connection con = null;
+		Connection con1 = null;
 		int occurence = 0;
 		try {
-			con = dataBaseConfig.getConnection();
-			PreparedStatement ps_disc = con.prepareStatement(DBConstants.COUNT_TICKET_FOR_DISCOUNT);
+			con1 = dataBaseConfig.getConnection();
+			PreparedStatement ps_disc = con1.prepareStatement(DBConstants.COUNT_TICKET_FOR_DISCOUNT);
 			ps_disc.setString(1, ticket.getVehicleRegNumber());
 			ResultSet rs = ps_disc.executeQuery();
 			if (rs.next()) {
 				occurence = rs.getInt(1);
 			}
+			dataBaseConfig.closeResultSet(rs); 
+			dataBaseConfig.closePreparedStatement(ps_disc); 
 		} catch (Exception ex) {
 			logger.error("Error saving ticket info", ex);
 		} finally {
-			dataBaseConfig.closeConnection(con);
+			dataBaseConfig.closeConnection(con1); 
 		}		
 		return occurence;
 	}
