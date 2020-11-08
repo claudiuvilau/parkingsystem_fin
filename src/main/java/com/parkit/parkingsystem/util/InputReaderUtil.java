@@ -35,5 +35,18 @@ public class InputReaderUtil {
         }
     }
 
+    public String readPassword() throws Exception {
+        try {
+            String password= scan.nextLine();
+            if(password.trim() != "java1234*") {
+                throw new IllegalArgumentException("Invalid input provided");
+            }
+            return password;
+        }catch(Exception e){
+            logger.error("Error while reading user input from Shell", e);
+            System.out.println("Error reading input. Please enter a valid string for the password");
+            throw e;
+        }
+    }
 
 }

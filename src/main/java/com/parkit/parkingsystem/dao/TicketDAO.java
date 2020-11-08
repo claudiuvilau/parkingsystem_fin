@@ -24,7 +24,7 @@ public class TicketDAO {
 		Connection con = null;
 		try {
 			con = dataBaseConfig.getConnection();
-
+	
 			int occurence = 0;
 			String msg_disc;
 			occurence = occurence_for_disc(ticket);

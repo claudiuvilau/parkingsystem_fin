@@ -10,11 +10,13 @@ import java.util.TimeZone;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.parkit.parkingsystem.util.InputReaderUtil;
+
 public class DataBaseConfig {
 
 	private static final Logger logger = LogManager.getLogger("DataBaseConfig");
 
-	public Connection getConnection() throws ClassNotFoundException, SQLException {
+	public Connection getConnection() throws Exception {
 		logger.info("Create DB connection");
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		// pour éviter l'erreur message The server time zone value 'Paris, Madrid (heure
@@ -23,9 +25,15 @@ public class DataBaseConfig {
 
 		String url = "jdbc:mysql://localhost:3306/prod";
 		String user = "claudiu";
-		String mdp = "java1234*";
+		String mdp = getPassword();
 
 		return DriverManager.getConnection(url + url_timezone, user, mdp);
+	}
+	
+	public String getPassword() throws Exception {
+		System.out.println("Please type the password and press enter key");
+		InputReaderUtil read_password = new InputReaderUtil();
+		return read_password.readPassword();
 	}
 
 	public void closeConnection(Connection con) {
