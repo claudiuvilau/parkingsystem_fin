@@ -35,10 +35,24 @@ public class InputReaderUtil {
         }
     }
 
+    public String readUser() throws Exception {
+        try {
+            String user= scan.nextLine();
+            if(user == null || user.trim().length()==0 || !user.equalsIgnoreCase("claudiu")) {
+                throw new IllegalArgumentException("Invalid input provided");
+            }
+            return user;
+        }catch(Exception e){
+            logger.error("Error while reading user input from Shell", e);
+            System.out.println("Error reading input. Please enter a valid string for the user name");
+            throw e;
+        }
+    }
+    
     public String readPassword() throws Exception {
         try {
             String password= scan.nextLine();
-            if(password.trim() != "java1234*") {
+            if(password == null || password.trim().length()==0 || !password.equalsIgnoreCase("java1234*")) {
                 throw new IllegalArgumentException("Invalid input provided");
             }
             return password;

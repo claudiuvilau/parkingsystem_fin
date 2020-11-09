@@ -7,21 +7,18 @@ import static org.mockito.Mockito.when;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.parkit.parkingsystem.DataBaseTestConfig;
-import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
@@ -38,7 +35,9 @@ public class ParkingDataBaseIT {
 	private static ParkingSpotDAO parkingSpotDAO;
 	private static TicketDAO ticketDAO;
 	private static DataBasePrepareService dataBasePrepareService;
-
+	public static String user;
+	public static String pass;
+	
 	@Mock
 	private static InputReaderUtil inputReaderUtil;
 
@@ -76,7 +75,7 @@ public class ParkingDataBaseIT {
 		Date inTime = new Date();
 		inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000)); // set time 1 hour less
 		DataBaseTestConfig db_test = new DataBaseTestConfig();
-		Connection con = db_test.getConnection();
+		Connection con = db_test.getConnection(user, pass);
 		PreparedStatement ps1 = con.prepareStatement(DBConstants.UPDATE_TIME_TICKET);
 		ps1.setTimestamp(1, new Timestamp(inTime.getTime()));
 		ps1.execute();
@@ -105,7 +104,7 @@ public class ParkingDataBaseIT {
 		String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
 		// WHEN
 		DataBaseTestConfig db_test = new DataBaseTestConfig();
-		Connection con = db_test.getConnection();
+		Connection con = db_test.getConnection(user, pass);
 		PreparedStatement ps = con.prepareStatement(DBConstants.FIND_OUT_TICKET);
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
@@ -131,7 +130,7 @@ public class ParkingDataBaseIT {
 
 		// WHEN
 		DataBaseTestConfig db_test = new DataBaseTestConfig();
-		Connection con = db_test.getConnection();
+		Connection con = db_test.getConnection(user, pass);
 		PreparedStatement ps = con.prepareStatement(DBConstants.FIND_TICKET_FOR_DISCOUNT);
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
@@ -160,7 +159,7 @@ public class ParkingDataBaseIT {
 		Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
 
 		DataBaseTestConfig db_test = new DataBaseTestConfig();
-		Connection con = db_test.getConnection();
+		Connection con = db_test.getConnection(user, pass);
 		PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
@@ -177,5 +176,4 @@ public class ParkingDataBaseIT {
 		db_test.closeResultSet(rs);
 		db_test.closePreparedStatement(ps);
 	}
-
 }

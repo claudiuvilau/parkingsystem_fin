@@ -17,8 +17,8 @@ public class DataBaseTestConfig extends DataBaseConfig {
 
 	private static final Logger logger = LogManager.getLogger("DataBaseTestConfig");
 
-	@Override
-	public Connection getConnection() throws Exception {
+	//@Override
+	public Connection getConnection(String user, String mdp) throws Exception {
 		logger.info("Create DB connection");
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		// pour éviter l'erreur message The server time zone value 'Paris, Madrid (heure
@@ -26,10 +26,18 @@ public class DataBaseTestConfig extends DataBaseConfig {
 		String url_timezone = "?serverTimezone=" + TimeZone.getDefault().getID();
 
 		String url = "jdbc:mysql://localhost:3306/test";
-		String user = "claudiu";
-		String mdp = getPassword();
+		user = "claudiu";
+		mdp = "java1234*";
+		//String mdp = getPassword();
 
 		return DriverManager.getConnection(url + url_timezone, user, mdp);
+	}
+	
+	@Override
+	public String getUser() throws Exception {
+		System.out.println("Please type the user name and press enter key");
+		InputReaderUtil read_user = new InputReaderUtil();
+		return read_user.readUser();
 	}
 	
 	@Override

@@ -98,6 +98,25 @@ public class ParkingServiceTest {
 		verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));
 	}
 	
+	  @Test
+	    public void processExitingVehicleWithticketFalse()
+	    {
+	    	//when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
+	        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+	    	parkingService.processExitingVehicle();
+	    	verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));
+	    }
+	    
+
+	    @Test
+	    public void processExitingVehicleWithException()
+	    {
+	    	//when(ticketDAO.updateTicket(any(Ticket.class))).thenThrow(new NullPointerException());
+	        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+	    	parkingService.processExitingVehicle();
+	    	verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));	    	
+	    }
+	
 	@Test
 	public void processIncomingVehicleCarTest() throws Exception {
 		try {		
@@ -151,4 +170,23 @@ public class ParkingServiceTest {
 		verify(ticketDAO, Mockito.times(0)).saveTicket(any(Ticket.class));
 	}
 	
+	  @Test
+	    public void processIncomingVehicleWithticketFalse()
+	    {
+	    	//when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
+	        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+	    	parkingService.processExitingVehicle();
+	    	verify(ticketDAO, Mockito.times(0)).saveTicket(any(Ticket.class));
+	    }
+	    
+
+	    @Test
+	    public void processIncomingVehicleWithException()
+	    {
+	    	//when(ticketDAO.updateTicket(any(Ticket.class))).thenThrow(new NullPointerException());
+	        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+	    	parkingService.processExitingVehicle();
+	    	verify(ticketDAO, Mockito.times(0)).saveTicket(any(Ticket.class));	    	
+	    }
+
 }

@@ -16,7 +16,7 @@ public class DataBaseConfig {
 
 	private static final Logger logger = LogManager.getLogger("DataBaseConfig");
 
-	public Connection getConnection() throws Exception {
+	public Connection getConnection(String user, String mdp) throws Exception {
 		logger.info("Create DB connection");
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		// pour éviter l'erreur message The server time zone value 'Paris, Madrid (heure
@@ -24,12 +24,19 @@ public class DataBaseConfig {
 		String url_timezone = "?serverTimezone=" + TimeZone.getDefault().getID();
 
 		String url = "jdbc:mysql://localhost:3306/prod";
-		String user = "claudiu";
-		String mdp = getPassword();
+		//String user = "claudiu";
+		//String mdp = "java1234*";
+		//String mdp = getPassword();
 
 		return DriverManager.getConnection(url + url_timezone, user, mdp);
 	}
-	
+
+	public String getUser() throws Exception {
+		System.out.println("Please type the user name and press enter key");
+		InputReaderUtil read_user = new InputReaderUtil();
+		return read_user.readUser();
+	}
+
 	public String getPassword() throws Exception {
 		System.out.println("Please type the password and press enter key");
 		InputReaderUtil read_password = new InputReaderUtil();
