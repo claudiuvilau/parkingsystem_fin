@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.parkit.parkingsystem.App;
+import com.parkit.parkingsystem.Password;
 import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
@@ -24,9 +24,9 @@ public class TicketDAO {
 	public boolean saveTicket(Ticket ticket) {
 		Connection con = null;
 		try {
-			
-			con = dataBaseConfig.getConnection(App.user, App.pass);
-	
+
+			con = dataBaseConfig.getConnection(Password.password.getUser(), Password.password.getPass());
+
 			int occurence = 0;
 			String msg_disc;
 			occurence = occurence_for_disc(ticket);
@@ -44,7 +44,7 @@ public class TicketDAO {
 			ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTime())));
 			ps.execute();
 			dataBaseConfig.closePreparedStatement(ps);
-			//return ps.execute();
+			// return ps.execute();
 			return true;
 		} catch (
 
@@ -53,7 +53,7 @@ public class TicketDAO {
 		} finally {
 			dataBaseConfig.closeConnection(con);
 		}
-			return false;
+		return false;
 
 	}
 
@@ -61,7 +61,7 @@ public class TicketDAO {
 		Connection con = null;
 		Ticket ticket = null;
 		try {
-			con = dataBaseConfig.getConnection(App.user, App.pass);
+			con = dataBaseConfig.getConnection(Password.password.getUser(), Password.password.getPass());
 			PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
 			// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
 			ps.setString(1, vehicleRegNumber);
@@ -83,13 +83,13 @@ public class TicketDAO {
 		} finally {
 			dataBaseConfig.closeConnection(con);
 		}
-			return ticket;
+		return ticket;
 	}
 
 	public boolean updateTicket(Ticket ticket) {
 		Connection con = null;
 		try {
-			con = dataBaseConfig.getConnection(App.user, App.pass);
+			con = dataBaseConfig.getConnection(Password.password.getUser(), Password.password.getPass());
 
 			int occurence = 0;
 			occurence = occurence_for_disc(ticket);
@@ -117,20 +117,20 @@ public class TicketDAO {
 		Connection con1 = null;
 		int occurence = 0;
 		try {
-			con1 = dataBaseConfig.getConnection(App.user, App.pass);
+			con1 = dataBaseConfig.getConnection(Password.password.getUser(), Password.password.getPass());
 			PreparedStatement ps_disc = con1.prepareStatement(DBConstants.COUNT_TICKET_FOR_DISCOUNT);
 			ps_disc.setString(1, ticket.getVehicleRegNumber());
 			ResultSet rs = ps_disc.executeQuery();
 			if (rs.next()) {
 				occurence = rs.getInt(1);
 			}
-			dataBaseConfig.closeResultSet(rs); 
-			dataBaseConfig.closePreparedStatement(ps_disc); 
+			dataBaseConfig.closeResultSet(rs);
+			dataBaseConfig.closePreparedStatement(ps_disc);
 		} catch (Exception ex) {
 			logger.error("Error saving ticket info", ex);
 		} finally {
-			dataBaseConfig.closeConnection(con1); 
-		}		
+			dataBaseConfig.closeConnection(con1);
+		}
 		return occurence;
 	}
 

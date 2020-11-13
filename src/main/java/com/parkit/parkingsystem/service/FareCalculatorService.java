@@ -39,8 +39,8 @@ public class FareCalculatorService {
 	}
 
 	private double durationTime(double dT) {
-
 		// story 1 - if less 30 min
+
 		if (dT <= 0.5) {
 			dT = 0;
 		}

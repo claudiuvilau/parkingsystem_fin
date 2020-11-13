@@ -37,7 +37,7 @@ public class ParkingDataBaseIT {
 	private static DataBasePrepareService dataBasePrepareService;
 	public static String user;
 	public static String pass;
-	
+
 	@Mock
 	private static InputReaderUtil inputReaderUtil;
 

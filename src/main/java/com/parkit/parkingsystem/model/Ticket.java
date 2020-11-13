@@ -47,9 +47,9 @@ public class Ticket {
 		return discount;
 	}
 
-	/*public void setDiscount(double price) {
-		this.discount = discount;
-	}*/
+	/*
+	 * public void setDiscount(double price) { this.discount = discount; }
+	 */
 
 	public Date getInTime() {
 		Date inTime2 = inTime;
@@ -57,8 +57,12 @@ public class Ticket {
 	}
 
 	public void setInTime(Date inTime) {
-		Date inTime2 = inTime;
-		this.inTime = inTime2;
+		// this.inTime = inTime;
+		if (inTime == null) {
+			this.inTime = null;
+		} else {
+			this.inTime = new Date(inTime.getTime());
+		}
 	}
 
 	public Date getOutTime() {
@@ -67,11 +71,11 @@ public class Ticket {
 	}
 
 	public void setOutTime(Date outTime) {
-		if(outTime == null) {
+		if (outTime == null) {
 			this.outTime = null;
-			} else {
+		} else {
 			this.outTime = new Date(outTime.getTime());
-			}
-		//this.outTime = (Date) outTime.clone();
+		}
+		// this.outTime = (Date) outTime.clone();
 	}
 }
