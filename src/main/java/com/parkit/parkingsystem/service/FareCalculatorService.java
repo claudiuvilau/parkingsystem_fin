@@ -43,7 +43,8 @@ public class FareCalculatorService {
 
 		if (dT <= 0.5) {
 			dT = 0;
-		}
+		} else
+			dT = dT - 0.5;
 		return dT;
 	}
 

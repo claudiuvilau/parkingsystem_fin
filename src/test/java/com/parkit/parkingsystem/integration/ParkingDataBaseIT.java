@@ -1,12 +1,12 @@
 package com.parkit.parkingsystem.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -19,12 +19,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.parkit.parkingsystem.DataBaseTestConfig;
-import com.parkit.parkingsystem.constants.DBConstants;
-import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
-import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
@@ -37,6 +34,7 @@ public class ParkingDataBaseIT {
 	private static DataBasePrepareService dataBasePrepareService;
 	public static String user;
 	public static String pass;
+	public static Connection con;
 
 	@Mock
 	private static InputReaderUtil inputReaderUtil;
@@ -55,10 +53,12 @@ public class ParkingDataBaseIT {
 		when(inputReaderUtil.readSelection()).thenReturn(1);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		dataBasePrepareService.clearDataBaseEntries();
+		con = parkingSpotDAO.dataBaseConfig.getConnection(user, pass);
 	}
 
 	@AfterAll
-	private static void tearDown() {
+	private static void tearDown() throws SQLException {
+		con.close();
 
 	}
 
@@ -69,111 +69,50 @@ public class ParkingDataBaseIT {
 		// TODO: check that a ticket is actualy saved in DB and Parking table is updated
 		// with availability
 
-		// GIVEN
 		String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
-		// WHEN
-		Date inTime = new Date();
-		inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000)); // set time 1 hour less
-		DataBaseTestConfig db_test = new DataBaseTestConfig();
-		Connection con = db_test.getConnection(user, pass);
-		PreparedStatement ps1 = con.prepareStatement(DBConstants.UPDATE_TIME_TICKET);
-		ps1.setTimestamp(1, new Timestamp(inTime.getTime()));
-		ps1.execute();
-		PreparedStatement ps = con.prepareStatement(DBConstants.FIND_IN_TICKET);
+
+		PreparedStatement ps = con.prepareStatement(
+				"select t.PARKING_NUMBER, p.available, t.VEHICLE_REG_NUMBER from ticket t,parking p where p.available = false and isnull(t.out_time) and p.parking_number = t.parking_number and t.VEHICLE_REG_NUMBER=?");
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
-		// THEN
 		if (rs.next()) {
-			assertNotEquals(null, rs.getString(5));
-		} else
-			assertNotEquals(null, rs.getString(5));
-		db_test.closeResultSet(rs);
-		db_test.closePreparedStatement(ps);
-
+			assertThat(rs.getString(3)).isEqualTo(vehicleRegNumber);
+		}
+		parkingSpotDAO.dataBaseConfig.closeResultSet(rs);
+		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
 	}
 
 	@Test
 	public void testParkingLotExit() throws Exception {
-		testParkingACar();
-		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.processExitingVehicle();
 		// TODO: check that the fare generated and out time are populated correctly in
 		// the database
 
-		// GIVEN
-		String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
-		// WHEN
-		DataBaseTestConfig db_test = new DataBaseTestConfig();
-		Connection con = db_test.getConnection(user, pass);
-		PreparedStatement ps = con.prepareStatement(DBConstants.FIND_OUT_TICKET);
-		ps.setString(1, vehicleRegNumber);
-		ResultSet rs = ps.executeQuery();
-		// THEN
-		if (rs.next()) {
-			assertNotEquals(null, rs.getString(5));
-		} else
-			assertNotEquals(null, rs.getString(5));
-
-		db_test.closeResultSet(rs);
-		db_test.closePreparedStatement(ps);
-
-	}
-
-	@Test
-	public void testDiscount() throws Exception {
-		testParkingLotExit();
-		testParkingLotExit();
-		testParkingLotExit();
-
-		// GIVEN
-		String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
-
-		// WHEN
-		DataBaseTestConfig db_test = new DataBaseTestConfig();
-		Connection con = db_test.getConnection(user, pass);
-		PreparedStatement ps = con.prepareStatement(DBConstants.FIND_TICKET_FOR_DISCOUNT);
-		ps.setString(1, vehicleRegNumber);
-		ResultSet rs = ps.executeQuery();
-		double disc = 0.05;
-
-		// THEN
-		rs.next();
-		assertEquals(Fare.CAR_RATE_PER_HOUR, rs.getDouble("price"));
-		while (rs.next()) {
-			assertEquals(Math.round((Fare.CAR_RATE_PER_HOUR - Fare.CAR_RATE_PER_HOUR * disc) * 100.0) / 100.0,
-					rs.getDouble("price"));
-		}
-		db_test.closeResultSet(rs);
-		db_test.closePreparedStatement(ps);
-
-	}
-
-	@Test
-	public void testgetTicket() throws Exception {
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.processIncomingVehicle();
-		// GIVEN
+		PreparedStatement ps;
 		String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
 
-		// WHEN
-		Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
+		parkingService.processIncomingVehicle();
 
-		DataBaseTestConfig db_test = new DataBaseTestConfig();
-		Connection con = db_test.getConnection(user, pass);
-		PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
+		// set IN time 1 hour less for calculate the fare for 1 hour or more, if not the
+		// time is less 30min so fare 0
+		Date inTime = new Date();
+		inTime.setTime(System.currentTimeMillis() - (90 * 60 * 1000));
+		ps = con.prepareStatement("update ticket set IN_TIME=? where isnull(out_time) and VEHICLE_REG_NUMBER=?");
+		ps.setTimestamp(1, new Timestamp(inTime.getTime()));
+		ps.setString(2, vehicleRegNumber);
+		ps.execute();
+		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
+
+		parkingService.processExitingVehicle();
+
+		ps = con.prepareStatement(
+				"select p.available, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME from ticket t,parking p where p.available = true and p.parking_number = t.parking_number and t.price > 0 and t.out_time is not null and t.VEHICLE_REG_NUMBER=?");
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
-
-		// THEN
-
 		if (rs.next()) {
-			assertEquals(ticket.getId(), rs.getInt(2));
-			assertEquals(ticket.getVehicleRegNumber(), vehicleRegNumber);
-			assertEquals(ticket.getPrice(), rs.getDouble(3));
-			assertEquals(ticket.getInTime(), rs.getTimestamp(4));
-			assertEquals(ticket.getOutTime(), rs.getTimestamp(5));
+			assertThat(rs.getString(3)).isEqualTo(vehicleRegNumber);
 		}
-		db_test.closeResultSet(rs);
-		db_test.closePreparedStatement(ps);
+		parkingSpotDAO.dataBaseConfig.closeResultSet(rs);
+		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
 	}
 }

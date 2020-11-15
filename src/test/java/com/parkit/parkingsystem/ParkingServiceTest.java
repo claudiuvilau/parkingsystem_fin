@@ -147,7 +147,7 @@ public class ParkingServiceTest {
 
 	// catch de ParkingSpot getNextParkingNumberIfAvailable() et getVehichleType()
 	@Test
-	public void processIncomingVehicleWithExceptionTest() {
+	public void ExceptionTest() {
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
 		verify(ticketDAO, Mockito.times(0)).saveTicket(any(Ticket.class));

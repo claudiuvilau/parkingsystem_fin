@@ -40,7 +40,7 @@ public class InputReaderUtil {
 	public String readUser() throws Exception {
 		try {
 			String user = scan.nextLine();
-			if (user == null || user.trim().length() == 0 || !user.equalsIgnoreCase("claudiu")) {
+			if (user == null || user.trim().length() == 0) {
 				throw new IllegalArgumentException("Invalid input provided");
 			}
 			return user;
@@ -54,7 +54,7 @@ public class InputReaderUtil {
 	public String readPassword() throws Exception {
 		try {
 			String password = scan.nextLine();
-			if (password == null || password.trim().length() == 0 || !password.equalsIgnoreCase("java1234*")) {
+			if (password == null || password.trim().length() == 0) {
 				throw new IllegalArgumentException("Invalid input provided");
 			}
 			return password;
