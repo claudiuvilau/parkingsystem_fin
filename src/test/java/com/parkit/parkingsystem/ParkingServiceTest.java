@@ -1,5 +1,6 @@
 package com.parkit.parkingsystem;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -143,6 +144,23 @@ public class ParkingServiceTest {
 		}
 		parkingService.processIncomingVehicle();
 		verify(ticketDAO, Mockito.times(0)).saveTicket(any(Ticket.class));
+	}
+
+	@Test
+	public void processIncomingVehicleException() throws Exception {
+		when(inputReaderUtil.readSelection()).thenReturn(1);
+		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
+		when(parkingSpotDAO.updateParking(parkingSpot)).thenThrow(new RuntimeException());
+		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		try {
+			parkingService.processIncomingVehicle();
+		} catch (Exception e) {
+			// e.printStackTrace();
+			// throw new RuntimeException("Failed to set up test mock objects");
+			assertTrue(e instanceof RuntimeException);
+		}
+		// verify(ticketDAO, Mockito.times(0)).saveTicket(any(Ticket.class));
+
 	}
 
 	// catch de ParkingSpot getNextParkingNumberIfAvailable() et getVehichleType()
