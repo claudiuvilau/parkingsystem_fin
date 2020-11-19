@@ -97,7 +97,7 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	public void processExitingVehicleWithException() throws Exception { //
+	public void processExitingVehicleWithException() throws Exception {
 		when(ticketDAO.getTicket("ABCDEF")).thenReturn(null);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processExitingVehicle();
@@ -155,20 +155,20 @@ public class ParkingServiceTest {
 		try {
 			parkingService.processIncomingVehicle();
 		} catch (Exception e) {
-			// e.printStackTrace();
-			// throw new RuntimeException("Failed to set up test mock objects");
 			assertTrue(e instanceof RuntimeException);
 		}
-		// verify(ticketDAO, Mockito.times(0)).saveTicket(any(Ticket.class));
-
 	}
 
-	// catch de ParkingSpot getNextParkingNumberIfAvailable() et getVehichleType()
 	@Test
-	public void ExceptionTest() {
+	public void getNextAvailableSlotException() throws Exception {
+		when(inputReaderUtil.readSelection()).thenReturn(1);
+		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenThrow(new IllegalArgumentException());
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.processIncomingVehicle();
-		verify(ticketDAO, Mockito.times(0)).saveTicket(any(Ticket.class));
+		try {
+			parkingService.processIncomingVehicle();
+		} catch (Exception ie) {
+			assertTrue(ie instanceof IllegalArgumentException);
+		}
 	}
 
 }
