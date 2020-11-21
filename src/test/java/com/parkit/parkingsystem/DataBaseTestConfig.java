@@ -17,7 +17,7 @@ public class DataBaseTestConfig extends DataBaseConfig {
 
 	private static final Logger logger = LogManager.getLogger("DataBaseTestConfig");
 
-	//@Override
+	// @Override
 	public Connection getConnection(String user, String mdp) throws Exception {
 		logger.info("Create DB connection");
 		Class.forName("com.mysql.cj.jdbc.Driver");
@@ -28,18 +28,17 @@ public class DataBaseTestConfig extends DataBaseConfig {
 		String url = "jdbc:mysql://localhost:3306/test";
 		user = "claudiu";
 		mdp = "java1234*";
-		//String mdp = getPassword();
 
 		return DriverManager.getConnection(url + url_timezone, user, mdp);
 	}
-	
+
 	@Override
 	public String getUser() throws Exception {
 		System.out.println("Please type the user name and press enter key");
 		InputReaderUtil read_user = new InputReaderUtil();
 		return read_user.readUser();
 	}
-	
+
 	@Override
 	public String getPassword() throws Exception {
 		System.out.println("Please type the password and press enter key");
@@ -82,5 +81,5 @@ public class DataBaseTestConfig extends DataBaseConfig {
 			}
 		}
 	}
-	
+
 }

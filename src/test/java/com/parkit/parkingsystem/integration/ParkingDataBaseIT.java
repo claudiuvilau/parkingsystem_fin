@@ -134,7 +134,7 @@ public class ParkingDataBaseIT {
 		parkingService.processIncomingVehicle();
 
 		ps = con.prepareStatement(
-				"select p.available, p.PARKING_NUMBER, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME from ticket t,parking p where p.available = false and p.parking_number = t.parking_number and t.VEHICLE_REG_NUMBER=?");
+				"select p.available, p.PARKING_NUMBER, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME from ticket t,parking p where p.available = false and p.parking_number = t.parking_number and isnull(t.out_time) and t.VEHICLE_REG_NUMBER=?");
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
 		assertTrue(rs.next());
@@ -148,8 +148,7 @@ public class ParkingDataBaseIT {
 	@Test
 	public void testParkingCar() throws Exception {
 
-		// when(inputReaderUtil.readSelection()).thenReturn(1); // selection a CAR to
-		// the @BeforeEach
+		// selection a CAR to the @BeforeEach
 
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		PreparedStatement ps;
@@ -158,7 +157,7 @@ public class ParkingDataBaseIT {
 		parkingService.processIncomingVehicle();
 
 		ps = con.prepareStatement(
-				"select p.available, p.PARKING_NUMBER, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME from ticket t,parking p where p.available = false and p.parking_number = t.parking_number and t.VEHICLE_REG_NUMBER=?");
+				"select p.available, p.PARKING_NUMBER, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME from ticket t,parking p where p.available = false and p.parking_number = t.parking_number and isnull(t.out_time) and t.VEHICLE_REG_NUMBER=?");
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
 		assertTrue(rs.next());
@@ -181,7 +180,7 @@ public class ParkingDataBaseIT {
 		Date inTime = new Date();
 
 		parkingService.processIncomingVehicle();
-		inTime.setTime(System.currentTimeMillis() - (90 * 60 * 1000));
+		inTime.setTime(System.currentTimeMillis() - (90 * 60 * 1000)); // 90 instead of 60 because 30 min is free
 		ps = con.prepareStatement("update ticket set IN_TIME=? where isnull(out_time) and VEHICLE_REG_NUMBER=?");
 		ps.setTimestamp(1, new Timestamp(inTime.getTime()));
 		ps.setString(2, vehicleRegNumber);
@@ -210,14 +209,19 @@ public class ParkingDataBaseIT {
 		FareCalculatorService fareCalculatorService = new FareCalculatorService();
 		ParkingSpot parkingSpot = new ParkingSpot(5, ParkingType.BIKE, true);
 		ticket.setParkingSpot(parkingSpot);
-		rs.next();
-		rs.next();
-		ticket.setInTime(rs.getTime(4));
-		ticket.setOutTime(rs.getTime(5));
-		fareCalculatorService.calculateFare(ticket);
-		double price_with_disc = Math.round((ticket.getPrice() - (ticket.getPrice() * disc)) * 100.0) / 100.0;
-		assertThat(rs.getDouble(3)).isEqualTo(price_with_disc);
-
+		int occ = 2;// the discount begin to the 2 occurrences incoming vehicle so occ = 2
+		if (rs.absolute(occ)) {
+			rs.absolute(occ);
+		}
+		while (rs.next()) {
+			if (rs.getDouble(3) > 0) {
+				ticket.setInTime(rs.getTime(4));
+				ticket.setOutTime(rs.getTime(5));
+				fareCalculatorService.calculateFare(ticket);
+				double price_with_disc = Math.round((ticket.getPrice() - (ticket.getPrice() * disc)) * 100.0) / 100.0;
+				assertThat(rs.getDouble(3)).isEqualTo(price_with_disc);
+			}
+		}
 		parkingSpotDAO.dataBaseConfig.closeResultSet(rs);
 		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
 	}
@@ -225,8 +229,7 @@ public class ParkingDataBaseIT {
 	@Test
 	public void testParkingRecurringCar() throws Exception {
 
-		// when(inputReaderUtil.readSelection()).thenReturn(2); // selection a CAR in
-		// the @BeforeEach
+		// selection a CAR in the @BeforeEach
 
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		PreparedStatement ps;
@@ -235,7 +238,7 @@ public class ParkingDataBaseIT {
 		Date inTime = new Date();
 
 		parkingService.processIncomingVehicle();
-		inTime.setTime(System.currentTimeMillis() - (90 * 60 * 1000));
+		inTime.setTime(System.currentTimeMillis() - (90 * 60 * 1000)); // 90 instead of 60 because 30 min is free
 		ps = con.prepareStatement("update ticket set IN_TIME=? where isnull(out_time) and VEHICLE_REG_NUMBER=?");
 		ps.setTimestamp(1, new Timestamp(inTime.getTime()));
 		ps.setString(2, vehicleRegNumber);
@@ -264,15 +267,74 @@ public class ParkingDataBaseIT {
 		FareCalculatorService fareCalculatorService = new FareCalculatorService();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
 		ticket.setParkingSpot(parkingSpot);
-		rs.next();
-		rs.next();
-		ticket.setInTime(rs.getTime(4));
-		ticket.setOutTime(rs.getTime(5));
-		fareCalculatorService.calculateFare(ticket);
-		double price_with_disc = Math.round((ticket.getPrice() - (ticket.getPrice() * disc)) * 100.0) / 100.0;
-		assertThat(rs.getDouble(3)).isEqualTo(price_with_disc);
-
+		int occ = 2; // the discount begin to the 2 occurrences incoming vehicle so occ = 2
+		if (rs.absolute(occ)) {
+			rs.absolute(occ);
+		}
+		while (rs.next()) {
+			if (rs.getDouble(3) > 0) {
+				ticket.setInTime(rs.getTime(4));
+				ticket.setOutTime(rs.getTime(5));
+				fareCalculatorService.calculateFare(ticket);
+				double price_with_disc = Math.round((ticket.getPrice() - (ticket.getPrice() * disc)) * 100.0) / 100.0;
+				assertThat(rs.getDouble(3)).isEqualTo(price_with_disc);
+			}
+		}
 		parkingSpotDAO.dataBaseConfig.closeResultSet(rs);
 		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
 	}
+
+	@Test
+	public void testVerifyRecordsBD_available_true() throws Exception {
+
+		// we check if all parking available => all tickets closed
+		testParkingLotExit(); // adding 2 records
+		testParkingLotExit();
+
+		PreparedStatement ps;
+		ResultSet rs_parking;
+		ResultSet rs_ticket;
+		ps = con.prepareStatement("select * from parking where available = 0"); // any parking available
+		rs_parking = ps.executeQuery();
+
+		ps = con.prepareStatement("select * from ticket where isnull(out_time)"); // any ticket open
+		rs_ticket = ps.executeQuery();
+
+		assertThat(rs_parking.next()).isFalse();
+		assertThat(rs_ticket.next()).isFalse();
+
+		parkingSpotDAO.dataBaseConfig.closeResultSet(rs_parking);
+		parkingSpotDAO.dataBaseConfig.closeResultSet(rs_ticket);
+		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
+	}
+
+	@Test
+	public void testVerifyRecordsBD_available_false() throws Exception {
+
+		// we check how much parking available = how much tickets opened
+
+		testParkingCar(); // adding 2 records for the car
+		testParkingCar();
+
+		PreparedStatement ps;
+		ResultSet rs_parking;
+		ResultSet rs_ticket;
+		int records_parking = 0;
+		int records_ticket = 0;
+		ps = con.prepareStatement("select * from parking where available = 0");
+		rs_parking = ps.executeQuery();
+		rs_parking.last();
+		records_parking = rs_parking.getRow();
+		ps = con.prepareStatement("select * from ticket where isnull(out_time)");
+		rs_ticket = ps.executeQuery();
+		rs_ticket.last();
+		records_ticket = rs_ticket.getRow();
+
+		assertEquals(records_parking, records_ticket);
+
+		parkingSpotDAO.dataBaseConfig.closeResultSet(rs_parking);
+		parkingSpotDAO.dataBaseConfig.closeResultSet(rs_ticket);
+		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
+	}
+
 }

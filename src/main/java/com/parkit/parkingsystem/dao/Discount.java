@@ -2,8 +2,8 @@ package com.parkit.parkingsystem.dao;
 
 public class Discount {
 
-	private int nb_occurence = 1;
-	private double disc = 5;
+	private int nb_occurence = 1; // set the number of the occurrences to be available a discount
+	private double disc = 5; // set the discount to make 5 = 5%
 
 	public String discount_msg(int occurence) {
 		String msg_disc = "";

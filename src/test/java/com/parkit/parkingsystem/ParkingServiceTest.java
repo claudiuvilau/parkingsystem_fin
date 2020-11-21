@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
@@ -36,24 +37,6 @@ public class ParkingServiceTest {
 	@Mock
 	private static ParkingSpot parkingSpot;
 
-	/*
-	 * @BeforeEach private void setUpPerTest() { try {
-	 * when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-	 * 
-	 * ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false); Ticket
-	 * ticket = new Ticket(); ticket.setInTime(new Date(System.currentTimeMillis() -
-	 * (60 * 60 * 1000))); ticket.setParkingSpot(parkingSpot);
-	 * ticket.setVehicleRegNumber("ABCDEF");
-	 * 
-	 * when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-	 * when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-	 * 
-	 * when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-	 * 
-	 * parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO,
-	 * ticketDAO); } catch (Exception e) { e.printStackTrace(); throw new
-	 * RuntimeException("Failed to set up test mock objects"); } }
-	 */
 	@Test
 	public void processExitingVehicleTest() throws Exception {
 		try {
@@ -63,8 +46,8 @@ public class ParkingServiceTest {
 			ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
 			ticket.setParkingSpot(parkingSpot);
 			ticket.setVehicleRegNumber("ABCDEF");
-			when(ticketDAO.getTicket(anyString())).thenReturn(ticket); // for processExitingVehicleTest
-			when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true); // for processExitingVehicleTest
+			when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+			when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
 			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 			parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		} catch (Exception e) {
@@ -76,7 +59,7 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	public void processExitingVehicleWithticketFalseBranche2Test() {
+	public void processExitingVehicleWithticketFalseBranche2Test() throws SQLException {
 		try {
 			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
@@ -84,8 +67,8 @@ public class ParkingServiceTest {
 			ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
 			ticket.setParkingSpot(parkingSpot);
 			ticket.setVehicleRegNumber("ABCDEF");
-			when(ticketDAO.getTicket(anyString())).thenReturn(ticket); // for processExitingVehicleTest
-			when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false); // for processExitingVehicleTest
+			when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+			when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
 			parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		} catch (Exception e) {
 			e.printStackTrace();

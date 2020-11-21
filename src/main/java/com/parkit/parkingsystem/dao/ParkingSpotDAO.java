@@ -3,6 +3,7 @@ package com.parkit.parkingsystem.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,27 +40,27 @@ public class ParkingSpotDAO {
 		return result;
 	}
 
-	public boolean updateParking(ParkingSpot parkingSpot) {
+	public boolean updateParking(ParkingSpot parkingSpot) throws SQLException {
 		// update the availability for that parking slot
-		boolean result;
+		boolean result = false;
 		Connection con = null;
 		PreparedStatement ps = null;
 		int updateRowCount = 0;
 		try {
 			con = dataBaseConfig.getConnection(Password.password.getUser(), Password.password.getPass());
-			ps = con.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);
-			ps.setBoolean(1, parkingSpot.isAvailable());
-			ps.setInt(2, parkingSpot.getId());
 			try {
+				ps = con.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);
+				ps.setBoolean(1, parkingSpot.isAvailable());
+				ps.setInt(2, parkingSpot.getId());
 				updateRowCount = ps.executeUpdate();
-				dataBaseConfig.closePreparedStatement(ps);
+				result = updateRowCount == 1;
 			} finally {
-				ps.close();
+				if (ps != null) {
+					dataBaseConfig.closePreparedStatement(ps);
+				}
 			}
-			result = updateRowCount == 1;
 		} catch (Exception ex) {
 			logger.error("Error updating parking info", ex);
-			result = false;
 		} finally {
 			dataBaseConfig.closeConnection(con);
 		}

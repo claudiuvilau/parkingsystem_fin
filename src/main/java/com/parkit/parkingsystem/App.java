@@ -11,6 +11,7 @@ public class App {
 	public static void main(String args[]) throws Exception {
 		logger.info("Initializing Parking System");
 
+		// configuration of the user and password for the MySQL BD
 		Password user_pass = new Password();
 		user_pass.setUser(user_pass.password_user());
 		user_pass.setPass(user_pass.password_pass());
