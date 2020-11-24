@@ -77,8 +77,9 @@ public class ParkingDataBaseIT {
 
 		String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
 
-		PreparedStatement ps = con.prepareStatement(
-				"select t.PARKING_NUMBER, p.available, t.VEHICLE_REG_NUMBER from ticket t,parking p where p.available = false and isnull(t.out_time) and p.parking_number = t.parking_number and t.VEHICLE_REG_NUMBER=?");
+		PreparedStatement ps = con
+				.prepareStatement("select t.PARKING_NUMBER, p.available, t.VEHICLE_REG_NUMBER from ticket t,parking p "
+						+ "where p.available = false and isnull(t.out_time) and p.parking_number = t.parking_number and t.VEHICLE_REG_NUMBER=?");
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -112,7 +113,8 @@ public class ParkingDataBaseIT {
 		parkingService.processExitingVehicle();
 
 		ps = con.prepareStatement(
-				"select p.available, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME from ticket t,parking p where p.available = true and p.parking_number = t.parking_number and t.price > 0 and t.out_time is not null and t.VEHICLE_REG_NUMBER=?");
+				"select p.available, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME from ticket t,parking p "
+						+ "where p.available = true and p.parking_number = t.parking_number and t.price > 0 and t.out_time is not null and t.VEHICLE_REG_NUMBER=?");
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -285,7 +287,7 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	public void testVerifyRecordsBD_available_true() throws Exception {
+	public void testVerifyRecordsBDAvailableTrue() throws Exception {
 
 		// we check if all parking available => all tickets closed
 		testParkingLotExit(); // adding 2 records
@@ -309,7 +311,7 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	public void testVerifyRecordsBD_available_false() throws Exception {
+	public void testVerifyRecordsBDAvailableFalse() throws Exception {
 
 		// we check how much parking available = how much tickets opened
 
