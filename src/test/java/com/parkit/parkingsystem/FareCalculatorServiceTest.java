@@ -62,20 +62,6 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void testCalculateFareUnkownType() {
-		Date inTime = new Date();
-		inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
-		Date outTime = new Date();
-		outTime.setTime(inTime.getTime() + ((60 + freeparking) * 60 * 1000));
-		ParkingSpot parkingSpot = new ParkingSpot(1, null, false);
-
-		ticket.setInTime(inTime);
-		ticket.setOutTime(outTime);
-		ticket.setParkingSpot(parkingSpot);
-		assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));
-	}
-
-	@Test
 	public void testCalculateFareBikeWithFutureInTime() {
 		Date inTime = new Date();
 		inTime.setTime(System.currentTimeMillis() + (60 * 60 * 1000));

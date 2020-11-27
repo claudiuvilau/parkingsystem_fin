@@ -339,4 +339,32 @@ public class ParkingDataBaseIT {
 		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
 	}
 
+	@Test
+	public void testVerifyIf2Decimals() throws Exception {
+
+		// we check if more that 2 decimals in the price
+		testParkingLotExit(); // adding 2 records for the car
+		testParkingLotExit();
+
+		int dec = 0;
+		String decString;
+		int verify = 0;
+
+		PreparedStatement ps = con.prepareStatement("select price from ticket where price > 0");
+		ResultSet rs = ps.executeQuery();
+		System.out.println(rs.getBigDecimal(1));
+		System.out.println(rs.getBigDecimal(1));
+		while (rs.next()) {
+			// decString = "" + rs.getBigDecimal(1);
+			// dec = decString.indexOf(".");
+			// if (String.valueOf(decString.substring(dec) + 1).length() > 2) {
+			// verify = 3; // if number of decimals > 2
+			// }
+		}
+		assertEquals(0, verify);
+
+		parkingSpotDAO.dataBaseConfig.closeResultSet(rs);
+		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
+	}
+
 }

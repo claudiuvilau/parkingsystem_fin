@@ -1,5 +1,6 @@
 package com.parkit.parkingsystem;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -102,7 +103,7 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	public void testProcessIncomingVehicle() throws Exception {
+	public void testProcessIncomingVehicleCar() throws Exception {
 		when(inputReaderUtil.readSelection()).thenReturn(1);
 		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
@@ -116,9 +117,9 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	public void testProcessIncomingVehicleBrancheParkingNumber0() throws Exception {
-		when(inputReaderUtil.readSelection()).thenReturn(1);
-		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(0);
+	public void testProcessIncomingVehicleBike() throws Exception {
+		when(inputReaderUtil.readSelection()).thenReturn(2);
+		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE)).thenReturn(1);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		try {
 			parkingService.processIncomingVehicle();
@@ -126,7 +127,34 @@ public class ParkingServiceTest {
 			e.printStackTrace();
 			throw new RuntimeException("Failed to set up test mock objects");
 		}
-		verify(ticketDAO, Mockito.times(0)).saveTicket(any(Ticket.class));
+		verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
+	}
+
+	@Test
+	public void testgetNextParkingNumberIfAvailableException() throws Exception {
+		when(inputReaderUtil.readSelection()).thenReturn(-1);
+		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		try {
+			parkingSpot = parkingService.getNextParkingNumberIfAvailable();
+		} catch (Exception ie) {
+			ie.printStackTrace();
+			throw new RuntimeException("Failed to set up test mock objects");
+		}
+		assertEquals(null, parkingSpot);
+	}
+
+	@Test
+	public void testgetNextParkingNumberIfAvailableBrancheParkingNumber0() throws Exception {
+		when(inputReaderUtil.readSelection()).thenReturn(1);
+		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(0);
+		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		try {
+			parkingSpot = parkingService.getNextParkingNumberIfAvailable();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Failed to set up test mock objects");
+		}
+		assertEquals(null, parkingSpot);
 	}
 
 }
