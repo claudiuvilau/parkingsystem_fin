@@ -72,17 +72,20 @@ public class ParkingDataBaseIT {
 	public void testParkingACar() throws Exception {
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
-		// TODO: check that a ticket is actualy saved in DB and Parking table is updated
-		// with availability
+		// TODO: check that a ticket is actually saved in DB and Parking table is
+		// updated with availability
 
 		String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
 
 		PreparedStatement ps = con
-				.prepareStatement("select t.PARKING_NUMBER, p.available, t.VEHICLE_REG_NUMBER from ticket t,parking p "
-						+ "where p.available = false and isnull(t.out_time) and p.parking_number = t.parking_number and t.VEHICLE_REG_NUMBER=?");
+				.prepareStatement("SELECT t.PARKING_NUMBER, p.available, t.VEHICLE_REG_NUMBER FROM ticket t,parking p "
+						+ "WHERE p.available = false and isnull(t.out_time) and p.parking_number = t.parking_number and t.VEHICLE_REG_NUMBER=?");
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
+			assertThat(rs.getString(3)).isEqualTo(vehicleRegNumber);
+		} else {
+			System.out.println("There are not results in the query ! For the test we need the results.");
 			assertThat(rs.getString(3)).isEqualTo(vehicleRegNumber);
 		}
 		parkingSpotDAO.dataBaseConfig.closeResultSet(rs);
@@ -104,7 +107,7 @@ public class ParkingDataBaseIT {
 		// time is less 30min so fare 0
 		Date inTime = new Date();
 		inTime.setTime(System.currentTimeMillis() - (90 * 60 * 1000));
-		ps = con.prepareStatement("update ticket set IN_TIME=? where isnull(out_time) and VEHICLE_REG_NUMBER=?");
+		ps = con.prepareStatement("UPDATE ticket SET IN_TIME=? WHERE isnull(out_time) and VEHICLE_REG_NUMBER=?");
 		ps.setTimestamp(1, new Timestamp(inTime.getTime()));
 		ps.setString(2, vehicleRegNumber);
 		ps.execute();
@@ -113,11 +116,14 @@ public class ParkingDataBaseIT {
 		parkingService.processExitingVehicle();
 
 		ps = con.prepareStatement(
-				"select p.available, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME from ticket t,parking p "
-						+ "where p.available = true and p.parking_number = t.parking_number and t.price > 0 and t.out_time is not null and t.VEHICLE_REG_NUMBER=?");
+				"SELECT p.available, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME FROM ticket t,parking p "
+						+ "WHERE p.available = true and p.parking_number = t.parking_number and t.price > 0 and t.out_time is not null and t.VEHICLE_REG_NUMBER=?");
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
+			assertThat(rs.getString(3)).isEqualTo(vehicleRegNumber);
+		} else {
+			System.out.println("There are not results in the query ! For the test we need the results.");
 			assertThat(rs.getString(3)).isEqualTo(vehicleRegNumber);
 		}
 		parkingSpotDAO.dataBaseConfig.closeResultSet(rs);
@@ -136,7 +142,7 @@ public class ParkingDataBaseIT {
 		parkingService.processIncomingVehicle();
 
 		ps = con.prepareStatement(
-				"select p.available, p.PARKING_NUMBER, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME from ticket t,parking p where p.available = false and p.parking_number = t.parking_number and isnull(t.out_time) and t.VEHICLE_REG_NUMBER=?");
+				"SELECT p.available, p.PARKING_NUMBER, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME FROM ticket t,parking p WHERE p.available = false and p.parking_number = t.parking_number and isnull(t.out_time) and t.VEHICLE_REG_NUMBER=?");
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
 		assertTrue(rs.next());
@@ -159,7 +165,7 @@ public class ParkingDataBaseIT {
 		parkingService.processIncomingVehicle();
 
 		ps = con.prepareStatement(
-				"select p.available, p.PARKING_NUMBER, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME from ticket t,parking p where p.available = false and p.parking_number = t.parking_number and isnull(t.out_time) and t.VEHICLE_REG_NUMBER=?");
+				"SELECT p.available, p.PARKING_NUMBER, t.PARKING_NUMBER, t.VEHICLE_REG_NUMBER, p.TYPE, t.PRICE, t.IN_TIME, t.OUT_TIME FROM ticket t,parking p WHERE p.available = false and p.parking_number = t.parking_number and isnull(t.out_time) and t.VEHICLE_REG_NUMBER=?");
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
 		assertTrue(rs.next());
@@ -183,7 +189,7 @@ public class ParkingDataBaseIT {
 
 		parkingService.processIncomingVehicle();
 		inTime.setTime(System.currentTimeMillis() - (90 * 60 * 1000)); // 90 instead of 60 because 30 min is free
-		ps = con.prepareStatement("update ticket set IN_TIME=? where isnull(out_time) and VEHICLE_REG_NUMBER=?");
+		ps = con.prepareStatement("UPDATE ticket SET IN_TIME=? WHERE isnull(out_time) and VEHICLE_REG_NUMBER=?");
 		ps.setTimestamp(1, new Timestamp(inTime.getTime()));
 		ps.setString(2, vehicleRegNumber);
 		ps.execute();
@@ -193,7 +199,7 @@ public class ParkingDataBaseIT {
 
 		parkingService.processIncomingVehicle();
 		inTime.setTime(System.currentTimeMillis() - (90 * 60 * 1000));
-		ps = con.prepareStatement("update ticket set IN_TIME=? where isnull(out_time) and VEHICLE_REG_NUMBER=?");
+		ps = con.prepareStatement("UPDATE ticket SET IN_TIME=? WHERE isnull(out_time) and VEHICLE_REG_NUMBER=?");
 		ps.setTimestamp(1, new Timestamp(inTime.getTime()));
 		ps.setString(2, vehicleRegNumber);
 		ps.execute();
@@ -202,7 +208,7 @@ public class ParkingDataBaseIT {
 		parkingService.processExitingVehicle();
 
 		ps = con.prepareStatement(
-				"select PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME from ticket where price > 0 and VEHICLE_REG_NUMBER=? order by IN_TIME");
+				"SELECT PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME FROM ticket WHERE price > 0 and VEHICLE_REG_NUMBER=? order by IN_TIME");
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
 
@@ -213,7 +219,8 @@ public class ParkingDataBaseIT {
 		ticket.setParkingSpot(parkingSpot);
 		int occ = 2;// the discount begin to the 2 occurrences incoming vehicle so occ = 2
 		if (rs.absolute(occ)) {
-			rs.absolute(occ);
+			rs.previous(); // we stay to the row before the discount to verify the next rows if there are
+							// the discount
 		}
 		while (rs.next()) {
 			if (rs.getDouble(3) > 0) {
@@ -241,7 +248,7 @@ public class ParkingDataBaseIT {
 
 		parkingService.processIncomingVehicle();
 		inTime.setTime(System.currentTimeMillis() - (90 * 60 * 1000)); // 90 instead of 60 because 30 min is free
-		ps = con.prepareStatement("update ticket set IN_TIME=? where isnull(out_time) and VEHICLE_REG_NUMBER=?");
+		ps = con.prepareStatement("UPDATE ticket SET IN_TIME=? WHERE isnull(out_time) and VEHICLE_REG_NUMBER=?");
 		ps.setTimestamp(1, new Timestamp(inTime.getTime()));
 		ps.setString(2, vehicleRegNumber);
 		ps.execute();
@@ -251,7 +258,7 @@ public class ParkingDataBaseIT {
 
 		parkingService.processIncomingVehicle();
 		inTime.setTime(System.currentTimeMillis() - (90 * 60 * 1000));
-		ps = con.prepareStatement("update ticket set IN_TIME=? where isnull(out_time) and VEHICLE_REG_NUMBER=?");
+		ps = con.prepareStatement("UPDATE ticket SET IN_TIME=? WHERE isnull(out_time) and VEHICLE_REG_NUMBER=?");
 		ps.setTimestamp(1, new Timestamp(inTime.getTime()));
 		ps.setString(2, vehicleRegNumber);
 		ps.execute();
@@ -260,7 +267,7 @@ public class ParkingDataBaseIT {
 		parkingService.processExitingVehicle();
 
 		ps = con.prepareStatement(
-				"select PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME from ticket where price > 0 and VEHICLE_REG_NUMBER=? order by IN_TIME");
+				"SELECT PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME FROM ticket WHERE price > 0 and VEHICLE_REG_NUMBER=? order by IN_TIME");
 		ps.setString(1, vehicleRegNumber);
 		ResultSet rs = ps.executeQuery();
 
@@ -271,7 +278,8 @@ public class ParkingDataBaseIT {
 		ticket.setParkingSpot(parkingSpot);
 		int occ = 2; // the discount begin to the 2 occurrences incoming vehicle so occ = 2
 		if (rs.absolute(occ)) {
-			rs.absolute(occ);
+			rs.previous(); // we stay to the row before the discount to verify the next rows if there are
+			// the discount
 		}
 		while (rs.next()) {
 			if (rs.getDouble(3) > 0) {
@@ -296,10 +304,10 @@ public class ParkingDataBaseIT {
 		PreparedStatement ps;
 		ResultSet rs_parking;
 		ResultSet rs_ticket;
-		ps = con.prepareStatement("select * from parking where available = 0"); // any parking available
+		ps = con.prepareStatement("SELECT * FROM parking WHERE available = 0"); // any parking available
 		rs_parking = ps.executeQuery();
 
-		ps = con.prepareStatement("select * from ticket where isnull(out_time)"); // any ticket open
+		ps = con.prepareStatement("SELECT * FROM ticket WHERE isnull(out_time)"); // any ticket open
 		rs_ticket = ps.executeQuery();
 
 		assertThat(rs_parking.next()).isFalse();
@@ -323,11 +331,11 @@ public class ParkingDataBaseIT {
 		ResultSet rs_ticket;
 		int records_parking = 0;
 		int records_ticket = 0;
-		ps = con.prepareStatement("select * from parking where available = 0");
+		ps = con.prepareStatement("SELECT * FROM parking WHERE available = 0");
 		rs_parking = ps.executeQuery();
 		rs_parking.last();
 		records_parking = rs_parking.getRow();
-		ps = con.prepareStatement("select * from ticket where isnull(out_time)");
+		ps = con.prepareStatement("SELECT * FROM ticket WHERE isnull(out_time)");
 		rs_ticket = ps.executeQuery();
 		rs_ticket.last();
 		records_ticket = rs_ticket.getRow();
@@ -350,16 +358,20 @@ public class ParkingDataBaseIT {
 		String decString;
 		int verify = 0;
 
-		PreparedStatement ps = con.prepareStatement("select price from ticket where price > 0");
+		PreparedStatement ps = con.prepareStatement("SELECT price FROM ticket WHERE price > 0");
 		ResultSet rs = ps.executeQuery();
-		System.out.println(rs.getBigDecimal(1));
-		System.out.println(rs.getBigDecimal(1));
+		if (rs.next()) {
+			rs.beforeFirst();
+		} else {
+			System.out.println("There are not results in the query ! For the test we need the results.");
+			verify = 1;
+		}
 		while (rs.next()) {
-			// decString = "" + rs.getBigDecimal(1);
-			// dec = decString.indexOf(".");
-			// if (String.valueOf(decString.substring(dec) + 1).length() > 2) {
-			// verify = 3; // if number of decimals > 2
-			// }
+			decString = "" + rs.getBigDecimal(1);
+			dec = decString.indexOf(".");
+			if (String.valueOf(decString.substring(dec + 1)).length() > 2) {
+				verify = 1; // if number of decimals > 2
+			}
 		}
 		assertEquals(0, verify);
 
@@ -367,4 +379,59 @@ public class ParkingDataBaseIT {
 		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
 	}
 
+	@Test
+	public void testVerifyIfNoPriceNegative() throws Exception {
+
+		// we check if we don't have the negative price
+		testParkingLotExit(); // adding 2 records
+		testParkingLotExit();
+
+		PreparedStatement ps = con.prepareStatement("SELECT price FROM ticket WHERE price < 0");
+		ResultSet rs = ps.executeQuery();
+		assertThat(rs.next()).isFalse();
+
+		parkingSpotDAO.dataBaseConfig.closeResultSet(rs);
+		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
+	}
+
+	@Test
+	public void testVerifyIfFreeParkingFor30Min() throws Exception {
+
+		// we check if we have the price 0 for 30 or less 30 minutes
+		// adding 2 records
+		// selection a CAR in the @BeforeEach
+
+		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		PreparedStatement ps;
+		String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
+
+		Date inTime = new Date();
+
+		parkingService.processIncomingVehicle();
+		inTime.setTime(System.currentTimeMillis() - (30 * 60 * 1000)); // 30 min is free
+		ps = con.prepareStatement("UPDATE ticket SET IN_TIME=? WHERE isnull(out_time) and VEHICLE_REG_NUMBER=?");
+		ps.setTimestamp(1, new Timestamp(inTime.getTime()));
+		ps.setString(2, vehicleRegNumber);
+		ps.execute();
+		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
+
+		parkingService.processExitingVehicle();
+
+		parkingService.processIncomingVehicle();
+		inTime.setTime(System.currentTimeMillis() - (20 * 60 * 1000)); // 20 min is free
+		ps = con.prepareStatement("UPDATE ticket SET IN_TIME=? WHERE isnull(out_time) and VEHICLE_REG_NUMBER=?");
+		ps.setTimestamp(1, new Timestamp(inTime.getTime()));
+		ps.setString(2, vehicleRegNumber);
+		ps.execute();
+		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
+
+		parkingService.processExitingVehicle();
+
+		ps = con.prepareStatement("SELECT price FROM ticket WHERE price = 0");
+		ResultSet rs = ps.executeQuery();
+		assertThat(rs.absolute(2)).isTrue(); // verify if we have the 2 records added in the result with price 0
+
+		parkingSpotDAO.dataBaseConfig.closeResultSet(rs);
+		parkingSpotDAO.dataBaseConfig.closePreparedStatement(ps);
+	}
 }

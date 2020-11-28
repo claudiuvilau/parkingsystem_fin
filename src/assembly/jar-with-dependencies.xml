@@ -13,7 +13,6 @@
   </containerDescriptorHandlers>
   <moduleSets>
     <moduleSet>
-
       <includeSubModules/>
       <includes/>
       <excludes/>
@@ -35,7 +34,6 @@
             <directory/>
             <lineEnding/>
             <filtered/>
-
           </fileSet>
         </fileSets>
         <includeModuleDirectory/>
@@ -64,8 +62,6 @@
               <includes/>
               <excludes/>
               <filtered/>
-
-            
             </unpackOptions>
             <scope/>
             <useProjectArtifact/>
@@ -79,10 +75,6 @@
           <includes/>
           <excludes/>
           <filtered/>
-          
-          
-
-      
         </unpackOptions>
         <outputFileNameMapping/>
       </binaries>
@@ -99,13 +91,11 @@
       <directory/>
       <lineEnding/>
       <filtered/>
-      
     </fileSet>
   </fileSets>
   <files>
     <file>
       <source/>
-      
       <outputDirectory/>
       <destName/>
       <fileMode/>
@@ -126,11 +116,7 @@
       <unpackOptions>
         <includes/>
         <excludes/>
-        <filtered/>
-        
-       
-        
-      
+        <filtered/>      
       </unpackOptions>
       <scope/>
       <useProjectArtifact/>
