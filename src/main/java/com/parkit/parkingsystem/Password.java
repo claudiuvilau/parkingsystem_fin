@@ -29,6 +29,7 @@ public class Password {
 	}
 
 	/**
+	 * 
 	 * @param user_user this is the user of the MySql
 	 * @param pass_pass this is the password of the MySql
 	 */
