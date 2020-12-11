@@ -2,6 +2,10 @@ package com.parkit.parkingsystem.model;
 
 import java.util.Date;
 
+/**
+ * @author Claudiu
+ *
+ */
 public class Ticket {
 	private int id;
 	private ParkingSpot parkingSpot;
@@ -47,23 +51,35 @@ public class Ticket {
 		return discount;
 	}
 
-	public void setDiscount(double price) {
-		this.discount = discount;
-	}
+	/*
+	 * public void setDiscount(double price) { this.discount = discount; }
+	 */
 
 	public Date getInTime() {
-		return inTime;
+		Date inTime2 = inTime;
+		return inTime2;
 	}
 
 	public void setInTime(Date inTime) {
-		this.inTime = inTime;
+		// this.inTime = inTime;
+		if (inTime == null) {
+			this.inTime = null;
+		} else {
+			this.inTime = new Date(inTime.getTime());
+		}
 	}
 
 	public Date getOutTime() {
-		return outTime;
+		Date outTime2 = outTime;
+		return outTime2;
 	}
 
 	public void setOutTime(Date outTime) {
-		this.outTime = outTime;
+		if (outTime == null) {
+			this.outTime = null;
+		} else {
+			this.outTime = new Date(outTime.getTime());
+		}
+		// this.outTime = (Date) outTime.clone();
 	}
 }
