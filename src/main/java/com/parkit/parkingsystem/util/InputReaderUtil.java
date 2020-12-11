@@ -5,6 +5,10 @@ import java.util.Scanner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * @author Claudiu
+ *
+ */
 public class InputReaderUtil {
 
 	private static Scanner scan = new Scanner(System.in, "UTF-8");

@@ -13,6 +13,10 @@ import org.apache.logging.log4j.Logger;
 import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
+/**
+ * @author Claudiu
+ *
+ */
 public class DataBaseTestConfig extends DataBaseConfig {
 
 	private static final Logger logger = LogManager.getLogger("DataBaseTestConfig");

@@ -12,10 +12,20 @@ import org.apache.logging.log4j.Logger;
 
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
+/**
+ * @author Claudiu
+ *
+ */
 public class DataBaseConfig {
 
 	private static final Logger logger = LogManager.getLogger("DataBaseConfig");
 
+	/**
+	 * @param user it's the use for the connection to MySql
+	 * @param mdp  it's the password for the connection MySql
+	 * @return the connection of the DB
+	 * @throws Exception if no connection to the DB
+	 */
 	public Connection getConnection(String user, String mdp) throws Exception {
 		logger.info("Create DB connection");
 		Class.forName("com.mysql.cj.jdbc.Driver");
@@ -28,15 +38,25 @@ public class DataBaseConfig {
 		return DriverManager.getConnection(url + url_timezone, user, mdp);
 	}
 
+	/**
+	 * this method read the user of the MySql to the keyboard
+	 * 
+	 * @return the user typed on the keyboard
+	 * @throws Exception if the typing is null
+	 */
 	public String getUser() throws Exception {
-		// read the user to the keyboard
 		System.out.println("Please type the user name and press enter key");
 		InputReaderUtil read_user = new InputReaderUtil();
 		return read_user.readUser();
 	}
 
+	/**
+	 * this method read the password of the MySql to the keyboard
+	 * 
+	 * @return the password typed on the keyboard
+	 * @throws Exception if the typing is null
+	 */
 	public String getPassword() throws Exception {
-		// read the password to the keyboard
 		System.out.println("Please type the password and press enter key");
 		InputReaderUtil read_password = new InputReaderUtil();
 		return read_password.readPassword();

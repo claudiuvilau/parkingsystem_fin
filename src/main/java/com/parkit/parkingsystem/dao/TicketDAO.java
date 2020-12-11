@@ -15,12 +15,22 @@ import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 
+/**
+ * @author Claudiu
+ *
+ */
 public class TicketDAO {
 
 	private static final Logger logger = LogManager.getLogger("TicketDAO");
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+	/**
+	 * this method save the ticket in the table ticket
+	 * 
+	 * @param ticket there are the data of ticket
+	 * @return true if the success saved
+	 */
 	public boolean saveTicket(Ticket ticket) {
 		Connection con = null;
 		try {
@@ -57,6 +67,12 @@ public class TicketDAO {
 
 	}
 
+	/**
+	 * this method configure the data of the ticket
+	 * 
+	 * @param vehicleRegNumber this is the number of the vehicle
+	 * @return the data of the ticket
+	 */
 	public Ticket getTicket(String vehicleRegNumber) {
 		Connection con = null;
 		Ticket ticket = null;
@@ -86,6 +102,13 @@ public class TicketDAO {
 		return ticket;
 	}
 
+	/**
+	 * this method update the table ticket with the price and the time out when the
+	 * vehicle go out
+	 * 
+	 * @param ticket this is the data of the ticket
+	 * @return true if the update is success
+	 */
 	public boolean updateTicket(Ticket ticket) {
 		Connection con = null;
 		try {
@@ -113,12 +136,20 @@ public class TicketDAO {
 		return false;
 	}
 
+	/**
+	 * this method count the number of the occurrences in the table
+	 * 
+	 * @param ticket this is the data of the ticket
+	 * @return the number of the occurrences
+	 */
 	private int occurence_for_disc(Ticket ticket) {
 		Connection con1 = null;
 		int occurence = 0;
 		try {
 			con1 = dataBaseConfig.getConnection(Password.password.getUser(), Password.password.getPass());
-			PreparedStatement ps_disc = con1.prepareStatement(DBConstants.COUNT_TICKET_FOR_DISCOUNT);
+			PreparedStatement ps_disc = con1.prepareStatement(DBConstants.COUNT_TICKET_FOR_DISCOUNT); // if the vehicle
+																										// stay 1 hour
+																										// or more
 			ps_disc.setString(1, ticket.getVehicleRegNumber());
 			ResultSet rs = ps_disc.executeQuery();
 			if (rs.next()) {

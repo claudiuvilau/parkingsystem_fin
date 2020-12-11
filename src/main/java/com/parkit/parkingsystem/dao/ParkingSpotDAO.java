@@ -14,11 +14,21 @@ import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 
+/**
+ * @author Claudiu
+ *
+ */
 public class ParkingSpotDAO {
 	private static final Logger logger = LogManager.getLogger("ParkingSpotDAO");
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+	/**
+	 * this method verify if there are a available slot
+	 * 
+	 * @param parkingType this is the type of the vehicle : car or bike
+	 * @return the number of the parking
+	 */
 	public int getNextAvailableSlot(ParkingType parkingType) {
 		Connection con = null;
 		int result = -1;
@@ -40,6 +50,13 @@ public class ParkingSpotDAO {
 		return result;
 	}
 
+	/**
+	 * this method update the table parking with the new vehicle
+	 * 
+	 * @param parkingSpot this is the data of the parking spot for the table parking
+	 * @return true if the update is success
+	 * @throws SQLException if no data for the parking spot
+	 */
 	public boolean updateParking(ParkingSpot parkingSpot) throws SQLException {
 		// update the availability for that parking slot
 		boolean result = false;

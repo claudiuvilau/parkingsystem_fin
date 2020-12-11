@@ -4,29 +4,32 @@ import java.sql.Connection;
 
 import com.parkit.parkingsystem.DataBaseTestConfig;
 
+/**
+ * @author Claudiu
+ *
+ */
 public class DataBasePrepareService {
 
-    DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
-	
-    public void clearDataBaseEntries() throws Exception{
-    	String user = "claudiu";
-    	String pass = "java1234*";
-    	Connection connection = null;
-        try{
-            connection = dataBaseTestConfig.getConnection(user, pass);
+	DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
 
-            //set parking entries to available
-            connection.prepareStatement("update parking set available = true").execute();
+	public void clearDataBaseEntries() throws Exception {
+		String user = "claudiu";
+		String pass = "java1234*";
+		Connection connection = null;
+		try {
+			connection = dataBaseTestConfig.getConnection(user, pass);
 
-            //clear ticket entries;
-            connection.prepareStatement("truncate table ticket").execute();
+			// set parking entries to available
+			connection.prepareStatement("update parking set available = true").execute();
 
-        }catch(Exception e){
-            e.printStackTrace();
-        }finally {
-            dataBaseTestConfig.closeConnection(connection);
-        }
-    }
+			// clear ticket entries;
+			connection.prepareStatement("truncate table ticket").execute();
 
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			dataBaseTestConfig.closeConnection(connection);
+		}
+	}
 
 }

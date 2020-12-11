@@ -12,6 +12,10 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
+/**
+ * @author Claudiu
+ *
+ */
 public class ParkingService {
 
 	private static final Logger logger = LogManager.getLogger("ParkingService");
@@ -28,6 +32,9 @@ public class ParkingService {
 		this.ticketDAO = ticketDAO;
 	}
 
+	/**
+	 * this method configure the data of the incoming of the vehicle
+	 */
 	public void processIncomingVehicle() {
 		try {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
@@ -60,6 +67,11 @@ public class ParkingService {
 		return inputReaderUtil.readVehicleRegistrationNumber();
 	}
 
+	/**
+	 * this method verify if a parking slot is available
+	 * 
+	 * @return the data of the parking spot for the table parking
+	 */
 	public ParkingSpot getNextParkingNumberIfAvailable() {
 		int parkingNumber = 0;
 		ParkingSpot parkingSpot = null;
@@ -98,6 +110,9 @@ public class ParkingService {
 		}
 	}
 
+	/**
+	 * this method configure the data of the exiting of the vehicle
+	 */
 	public void processExitingVehicle() {
 		try {
 			String vehicleRegNumber = getVehichleRegNumber();

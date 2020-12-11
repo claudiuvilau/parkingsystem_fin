@@ -15,6 +15,10 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
 
+/**
+ * @author Claudiu
+ *
+ */
 public class FareCalculatorServiceTest {
 
 	private static FareCalculatorService fareCalculatorService;
