@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Discount.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parking-system</a> &gt; <a href="index.source.html" class="el_package">com.parkit.parkingsystem.dao</a> &gt; <span class="el_source">Discount.java</span></div><h1>Discount.java</h1><pre class="source lang-java linenums">package com.parkit.parkingsystem.dao;
+
+/**
+ * @author Claudiu
+ *
+ *         this class configure the number of the occurrences for a discount and
+ *         the percentage number for the discount
+ */
+<span class="fc" id="L9">public class Discount {</span>
+
+<span class="fc" id="L11">	private int nb_occurence = 1; // set the number of the occurrences to be available a discount</span>
+<span class="fc" id="L12">	private double disc = 5; // set the discount to make 5 = 5%</span>
+
+	/**
+	 * this method verify if the occurrence and write a message to the customer
+	 * 
+	 * @param occurence this is the number of the occurrence for a discount
+	 * @return the message
+	 */
+	public String discount_msg(int occurence) {
+<span class="fc" id="L21">		String msg_disc = &quot;&quot;;</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">		if (occurence &gt;= nb_occurence) {</span>
+<span class="fc" id="L23">			msg_disc = &quot;Welcome back! As a recurring user of our parking lot, you'll benefit from a &quot; + disc</span>
+<span class="fc" id="L24">					+ &quot; % discount.&quot;;</span>
+		}
+<span class="fc" id="L26">		return msg_disc;</span>
+	}
+
+	/**
+	 * this method set the discount in percentage
+	 * 
+	 * @param occurence this is the number of the occurrence for a discount
+	 * @return the discount in percentage to use for the final price
+	 */
+	public double discount(int occurence) {
+<span class="fc bfc" id="L36" title="All 2 branches covered.">		if (occurence &lt; nb_occurence) {</span>
+<span class="fc" id="L37">			disc = 0;</span>
+		}
+<span class="fc" id="L39">		return disc;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
