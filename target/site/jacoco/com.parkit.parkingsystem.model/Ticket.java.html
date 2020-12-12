@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Ticket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parking-system</a> &gt; <a href="index.source.html" class="el_package">com.parkit.parkingsystem.model</a> &gt; <span class="el_source">Ticket.java</span></div><h1>Ticket.java</h1><pre class="source lang-java linenums">package com.parkit.parkingsystem.model;
+
+import java.util.Date;
+
+/**
+ * @author Claudiu
+ *
+ */
+<span class="fc" id="L9">public class Ticket {</span>
+	private int id;
+	private ParkingSpot parkingSpot;
+	private String vehicleRegNumber;
+	private double price;
+	private Date inTime;
+	private Date outTime;
+	private double discount;
+
+	public int getId() {
+<span class="fc" id="L19">		return id;</span>
+	}
+
+	public void setId(int id) {
+<span class="fc" id="L23">		this.id = id;</span>
+<span class="fc" id="L24">	}</span>
+
+	public ParkingSpot getParkingSpot() {
+<span class="fc" id="L27">		return parkingSpot;</span>
+	}
+
+	public void setParkingSpot(ParkingSpot parkingSpot) {
+<span class="fc" id="L31">		this.parkingSpot = parkingSpot;</span>
+<span class="fc" id="L32">	}</span>
+
+	public String getVehicleRegNumber() {
+<span class="fc" id="L35">		return vehicleRegNumber;</span>
+	}
+
+	public void setVehicleRegNumber(String vehicleRegNumber) {
+<span class="fc" id="L39">		this.vehicleRegNumber = vehicleRegNumber;</span>
+<span class="fc" id="L40">	}</span>
+
+	public double getPrice() {
+<span class="fc" id="L43">		return price;</span>
+	}
+
+	public void setPrice(double price) {
+<span class="fc" id="L47">		this.price = Math.round(price * 100.0) / 100.0;</span>
+<span class="fc" id="L48">	}</span>
+
+	public double getDiscount() {
+<span class="nc" id="L51">		return discount;</span>
+	}
+
+	/*
+	 * public void setDiscount(double price) { this.discount = discount; }
+	 */
+
+	public Date getInTime() {
+<span class="fc" id="L59">		Date inTime2 = inTime;</span>
+<span class="fc" id="L60">		return inTime2;</span>
+	}
+
+	public void setInTime(Date inTime) {
+		// this.inTime = inTime;
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">		if (inTime == null) {</span>
+<span class="nc" id="L66">			this.inTime = null;</span>
+<span class="nc" id="L67">		} else {</span>
+<span class="fc" id="L68">			this.inTime = new Date(inTime.getTime());</span>
+		}
+<span class="fc" id="L70">	}</span>
+
+	public Date getOutTime() {
+<span class="fc" id="L73">		Date outTime2 = outTime;</span>
+<span class="fc" id="L74">		return outTime2;</span>
+	}
+
+	public void setOutTime(Date outTime) {
+<span class="fc bfc" id="L78" title="All 2 branches covered.">		if (outTime == null) {</span>
+<span class="fc" id="L79">			this.outTime = null;</span>
+<span class="fc" id="L80">		} else {</span>
+<span class="fc" id="L81">			this.outTime = new Date(outTime.getTime());</span>
+		}
+		// this.outTime = (Date) outTime.clone();
+<span class="fc" id="L84">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
