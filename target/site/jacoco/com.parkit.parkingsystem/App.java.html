@@ -9,22 +9,21 @@ import com.parkit.parkingsystem.service.InteractiveShell;
  * @author Claudiu
  *
  *         this is the begin of the program
- *
  */
-<span class="nc" id="L14">public class App {</span>
-<span class="nc" id="L15">	private static final Logger logger = LogManager.getLogger(&quot;App&quot;);</span>
+<span class="nc" id="L13">public class App {</span>
+<span class="nc" id="L14">	private static final Logger logger = LogManager.getLogger(&quot;App&quot;);</span>
 
 	public static void main(String args[]) throws Exception {
-<span class="nc" id="L18">		logger.info(&quot;Initializing Parking System&quot;);</span>
+<span class="nc" id="L17">		logger.info(&quot;Initializing Parking System&quot;);</span>
 
 		// configuration of the user and password for the MySQL BD
-<span class="nc" id="L21">		Password user_pass = new Password();</span>
-<span class="nc" id="L22">		user_pass.setUser(user_pass.password_user());</span>
-<span class="nc" id="L23">		user_pass.setPass(user_pass.password_pass());</span>
-<span class="nc" id="L24">		Password.pass_vide(user_pass.getUser(), user_pass.getPass());</span>
+<span class="nc" id="L20">		Password user_pass = new Password();</span>
+<span class="nc" id="L21">		user_pass.setUser(user_pass.password_user());</span>
+<span class="nc" id="L22">		user_pass.setPass(user_pass.password_pass());</span>
+<span class="nc" id="L23">		Password.pass_vide(user_pass.getUser(), user_pass.getPass());</span>
 
-<span class="nc" id="L26">		InteractiveShell.loadInterface();</span>
-<span class="nc" id="L27">	}</span>
+<span class="nc" id="L25">		InteractiveShell.loadInterface();</span>
+<span class="nc" id="L26">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
