@@ -228,8 +228,8 @@ public class ParkingDataBaseIT {
 		}
 		while (rs.next()) {
 			if (rs.getDouble(3) > 0) {
-				ticket.setInTime(rs.getTime(4));
-				ticket.setOutTime(rs.getTime(5));
+				ticket.setInTime(rs.getTimestamp(4));
+				ticket.setOutTime(rs.getTimestamp(5));
 				fareCalculatorService.calculateFare(ticket);
 				double price_with_disc = Math.round((ticket.getPrice() - (ticket.getPrice() * disc)) * 100.0) / 100.0;
 				assertThat(rs.getDouble(3)).isEqualTo(price_with_disc);
@@ -287,8 +287,8 @@ public class ParkingDataBaseIT {
 		}
 		while (rs.next()) {
 			if (rs.getDouble(3) > 0) {
-				ticket.setInTime(rs.getTime(4));
-				ticket.setOutTime(rs.getTime(5));
+				ticket.setInTime(rs.getTimestamp(4));
+				ticket.setOutTime(rs.getTimestamp(5));
 				fareCalculatorService.calculateFare(ticket);
 				double price_with_disc = Math.round((ticket.getPrice() - (ticket.getPrice() * disc)) * 100.0) / 100.0;
 				assertThat(rs.getDouble(3)).isEqualTo(price_with_disc);
