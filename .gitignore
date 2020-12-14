@@ -1,1 +1,17 @@
 /target/
+*/target/**
+**/META-INF/
+
+### STS ###
+.apt_generated
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+
+### NetBeans ###
+/build/
+
